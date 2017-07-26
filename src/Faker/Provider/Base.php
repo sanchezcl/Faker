@@ -587,4 +587,34 @@ class Base
     {
         return new ValidGenerator($this->generator, $validator, $maxRetries);
     }
+
+    /**
+     * Returns a random CUIT
+
+     *
+     * @return integer
+     */
+    public static function cuit()
+    {
+      $acumulado = 0;
+      $len = 8;
+      $dni = strval(rand(pow(10, $len-1), pow(10, $len)-1));
+      $tipo = array('30','33','34');
+      $num = $tipo[rand(0,2)].$dni;
+
+      $digitos = str_split( $num );
+      $ult_digito = array_pop( $digitos );
+
+      for( $i = 0; $i < count( $digitos ); $i++ ){
+      $acumulado += $digitos[ 8 - $i ] * ( 2 + ( $i % 6 ) );
+      }
+      $verif = 11 - ( $acumulado % 11 );
+
+      if ($verif == 11 || $verif == 10){
+      $verif = 0;
+      }
+
+      $cuit = $num.strval($verif);
+      return intval($cuit);
+    }
 }
